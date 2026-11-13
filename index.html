@@ -26,7 +26,7 @@ h2{font-family:var(--head);font-weight:400;color:var(--gold);margin:0;font-size:
 .paper b.t{font-family:var(--head);font-weight:400;font-size:1.25rem;color:var(--pink2)}
 input{font:inherit;font-size:1.25rem;font-weight:600;text-align:center;letter-spacing:.14em;text-transform:uppercase;width:100%;padding:11px;border-radius:10px;border:3px solid var(--line);background:#fff;color:var(--ink);margin:8px 0 0}
 input:focus{outline:3px solid var(--pink)}
-.code{font-family:var(--head);font-size:clamp(2.4rem,9vw,3.6rem);letter-spacing:.2em;text-align:center;color:var(--ink);background:var(--paper);border:3px dashed var(--pink2);border-radius:12px;padding:6px 0 6px .2em;margin:8px 0}
+.code{font-family:var(--head);font-size:clamp(2.4rem,9vw,3.6rem);letter-spacing:.2em;text-align:center;color:var(--ink);background:var(--paper);border:3px dashed var(--pink2);border-radius:12px;padding:6px 0 6px .2em;margin:8px 0;cursor:pointer}
 .scene{display:flex;justify-content:center;align-items:flex-end;gap:clamp(14px,5vw,44px);padding-top:10px;border-bottom:16px solid #2a1c4d;margin:16px 0}
 .door{position:relative;width:clamp(74px,18vw,132px);aspect-ratio:.62;background:var(--door);border:7px solid #f8dba9;outline:3px solid var(--line);border-bottom:0;border-radius:3px 3px 0 0;box-shadow:inset -8px 0 0 #0000001a}
 .door:before{content:"";position:absolute;inset:14% 12% auto;height:30%;border:3px solid var(--door2);border-radius:3px}
@@ -49,95 +49,196 @@ ol.how{list-style:none;counter-reset:s;padding:0;margin:0;text-align:left}
 ol.how li{counter-increment:s;position:relative;padding:6px 0 6px 44px;line-height:1.4}
 ol.how li:before{content:counter(s);position:absolute;left:0;top:5px;width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--ink);font-family:var(--head);font-size:1.2rem;display:flex;align-items:center;justify-content:center;border:2px solid var(--line)}
 .toast{text-align:center;min-height:1.5em;font-weight:600;color:var(--gold);position:relative;z-index:2}
+.pill-row{display:flex;gap:8px;margin:8px 0}
+.pill{flex:1;padding:10px;border-radius:10px;border:3px solid var(--line);background:#5b4491;color:#fff;font:inherit;font-weight:600;cursor:pointer}
+.pill.on{background:var(--gold);color:var(--ink)}
 </style></head><body>
 <div id="app"></div>
 <template id="vn"><svg class="vine" width="120" height="150" viewBox="0 0 120 150" fill="none"><path d="M10 0V70Q10 90 22 96M40 0V40M70 0Q70 60 58 82Q54 100 66 112" stroke="#2f2054" stroke-width="6" stroke-linecap="round"/><circle cx="22" cy="100" r="7" fill="#2f2054"/><circle cx="40" cy="46" r="6" fill="#2f2054"/><circle cx="66" cy="116" r="7" fill="#2f2054"/></svg></template>
 <script>
 const CHEST='<svg class="chest" viewBox="0 0 150 100"><rect x="8" y="42" width="134" height="54" rx="4" fill="#c4542f" stroke="#2f2054" stroke-width="4"/><path d="M8 42Q8 8 75 8Q142 8 142 42Z" fill="#a8401f" stroke="#2f2054" stroke-width="4"/><rect x="30" y="8" width="12" height="88" fill="#6e2a16"/><rect x="108" y="8" width="12" height="88" fill="#6e2a16"/><rect x="64" y="38" width="22" height="26" rx="4" fill="#f6b53c" stroke="#2f2054" stroke-width="3"/><circle cx="75" cy="50" r="4" fill="#2f2054"/></svg>';
+
+// guide = who knows the culture & describes the word; guesser = the other partner who types the answer
 const LV=[
-{c:'Filipino',w:['PAROL'],g:'host',r:'I’m a glowing star that never sleeps in December. Filipinos hang me in windows, and I’m made of bamboo and paper. What am I?',f:'The parol is a star-shaped Christmas lantern. The Philippines also has the longest Christmas season in the world, starting as soon as the “-ber” months begin. Yes, even September.'},
-{c:'Indian',w:['RANGOLI','KOLAM'],g:'guest',r:'I’m colourful art made on the floor with powder or flower petals, right at the doorstep for Diwali. No, I’m not a pizza. I welcome Goddess Lakshmi. What am I?',f:'Rangoli is floor art made with coloured powder, rice flour or petals. It’s meant to welcome good luck into the home.'},
-{c:'Filipino',w:['HALOHALO'],g:'host',r:'I’m a cold, messy dessert: shaved ice, sweet beans, jelly, leche flan and ube ice cream in one tall glass. My name means “mix-mix”. What am I?',f:'Halo-halo means “mix-mix”. You stir everything together before the first bite, and the purple ube on top is the star.'},
-{c:'Indian',w:['MEHENDI','MEHNDI','HENNA'],g:'guest',r:'Brides wear me on their hands for days. I’m made from crushed leaves, smell earthy, and you have to sit still for hours while I dry. What am I?',f:'Mehendi (henna) is applied before weddings. The popular legend says the darker the colour, the more your partner loves you.'},
-{c:'Both cultures',w:['MAHAL'],g:'both',hr:'In Filipino, “Mahal kita” means “I love you”. Which 5-letter word means “love” and also “expensive” at the market?',gr:'Taj ______ is the famous monument of love built by Shah Jahan for his queen, in Agra. Fill in the blank.',f:'“Mahal” means love, and also expensive, in Filipino. In Hindi and Urdu it means palace. Love is priceless, but it’s also a little pricey.'}
+{c:'Filipino',w:['PAROL'],guide:'filipino',r:'I’m a glowing star that never sleeps in December. Filipinos hang me in windows, and I’m made of bamboo and paper. What am I?',f:'The parol is a star-shaped Christmas lantern. The Philippines also has the longest Christmas season in the world, starting as soon as the “-ber” months begin. Yes, even September.'},
+{c:'Indian',w:['RANGOLI','KOLAM'],guide:'indian',r:'I’m colourful art made on the floor with powder or flower petals, right at the doorstep for Diwali. No, I’m not a pizza. I welcome Goddess Lakshmi. What am I?',f:'Rangoli is floor art made with coloured powder, rice flour or petals. It’s meant to welcome good luck into the home.'},
+{c:'Filipino',w:['HALOHALO'],guide:'filipino',r:'I’m a cold, messy dessert: shaved ice, sweet beans, jelly, leche flan and ube ice cream in one tall glass. My name means “mix-mix”. What am I?',f:'Halo-halo means “mix-mix”. You stir everything together before the first bite, and the purple ube on top is the star.'},
+{c:'Indian',w:['MEHENDI','MEHNDI','HENNA'],guide:'indian',r:'Brides wear me on their hands for days. I’m made from crushed leaves, smell earthy, and you have to sit still for hours while I dry. What am I?',f:'Mehendi (henna) is applied before weddings. The popular legend says the darker the colour, the more your partner loves you.'},
+{c:'Both cultures',w:['MAHAL'],guide:'both',fr:'In Filipino, “Mahal kita” means “I love you”. Which 5-letter word means “love” and also “expensive” at the market?',ir:'Taj ______ is the famous monument of love built by Shah Jahan for his queen, in Agra. Fill in the blank.',f:'“Mahal” means love, and also expensive, in Filipino. In Hindi and Urdu it means palace. Love is priceless, but it’s also a little pricey.'}
 ];
+
+// STUN + TURN servers so India <-> Philippines connections succeed across strict mobile/home NATs
+const ICE_SERVERS = [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'stun:stun1.l.google.com:19302' },
+  { urls: 'stun:global.stun.twilio.com:3478' },
+  {
+    urls: 'turn:openrelay.metered.ca:80',
+    username: 'openrelayproject',
+    credential: 'openrelayproject'
+  },
+  {
+    urls: 'turn:openrelay.metered.ca:443',
+    username: 'openrelayproject',
+    credential: 'openrelayproject'
+  },
+  {
+    urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+    username: 'openrelayproject',
+    credential: 'openrelayproject'
+  }
+];
+
 const $=s=>document.querySelector(s),app=$('#app');
-let room=null,code='',me='host',S={lvl:0,ph:'play',paused:false,hint:false,started:false},unsub=[],ready=false,help=false;
+let room=null,code='',me='host',mySide=localStorage.getItem('wyeit_side')||'indian',S={lvl:0,ph:'play',paused:false,hint:false,started:false},unsub=[],ready=false,help=false;
 const norm=s=>s.toUpperCase().replace(/[^A-Z]/g,'');
 function frame(inner){const v=$('#vn').innerHTML;app.innerHTML=`<div class="frame">${v.replace('class="vine"','class="vine vl"')}${v.replace('class="vine"','class="vine vr"')}${inner}</div>`}
 function scene(o){return `<div class="scene"><div class="door ${o?'open':''}"><i>01</i><s></s></div>${CHEST}<div class="door"><i>02</i><s></s></div></div>`}
-const HOW=`<ol class="how"><li><b>One of you starts, one joins.</b> Tap Start Game to get a room code and send it to your partner. They tap Join Room and type it in.</li><li><b>Take turns being the guide.</b> On Filipino levels the Filipino partner sees the secret word and the Indian partner guesses. On Indian levels it flips.</li><li><b>Describe, don’t say.</b> The guide explains, acts out or hums the answer without saying the word. Funny voices are encouraged.</li><li><b>Type the answer to open the door.</b> Stuck? Use the hint button for the first letter.</li><li><b>Learn something new.</b> Every solved door shares a fun fact about the culture.</li><li><b>Finish all five doors together.</b> Pause or exit any time from the top bar. Both of you see the same game.</li></ol>`;
+const HOW=`<ol class="how"><li><b>Pick your side & connect.</b> Choose whether you’re the Indian or Filipino partner. One taps Start Game and shares the 5-letter code; the other taps Join Room.</li><li><b>Take turns being the guide.</b> On Filipino levels, the Filipino partner sees the secret word and describes it while the Indian partner guesses. On Indian levels, it flips!</li><li><b>Describe, don’t say.</b> Explain, act out, or hum the answer without saying the word.</li><li><b>Type the answer to open the door.</b> Stuck? Use the hint button for the first letter.</li><li><b>Finish all five doors together.</b> Both of you see the game sync live.</li></ol>`;
+
 function howto(){frame(`<h1>How to Play</h1><div class="paper">${HOW}</div><div class="stack"><button class="btn" id="bk">Back</button></div>`);$('#bk').onclick=()=>room?lobby():home()}
+
+function setSide(side){
+  mySide=side;
+  localStorage.setItem('wyeit_side',side);
+  home();
+}
+
 function home(msg=''){
 frame(`<h1>Will You Escape<br>in Time?</h1><p class="sub">An Indian and Filipino escape room for two. Solve the clues together before the lights go out.</p>${scene()}
-<div class="stack"><button class="btn" id="st">Start Game</button><button class="btn pk" id="jn0">Join Room</button><button class="btn gh" id="hw">How to Play</button></div><div class="toast">${msg}</div>`);
+<div class="stack">
+<div class="pill-row">
+  <button class="pill ${mySide=='indian'?'on':''}" id="s-in">🇮🇳 I’m Indian</button>
+  <button class="pill ${mySide=='filipino'?'on':''}" id="s-ph">🇵🇭 I’m Filipino</button>
+</div>
+<button class="btn" id="st">Start Game</button>
+<button class="btn pk" id="jn0">Join Room</button>
+<button class="btn gh" id="hw">How to Play</button>
+</div><div class="toast">${msg}</div>`);
+$('#s-in').onclick=()=>setSide('indian');
+$('#s-ph').onclick=()=>setSide('filipino');
 $('#st').onclick=()=>enter(Array.from({length:5},()=>'ABCDEFGHJKMNPQRSTUVWXYZ'[Math.random()*23|0]).join(''),'host');
-$('#hw').onclick=howto;$('#jn0').onclick=joinScreen}
+$('#hw').onclick=howto;$('#jn0').onclick=()=>joinScreen()}
+
 function joinScreen(msg=''){
-frame(`<h1>Join Room</h1><p class="sub">Type the code your partner sent you.</p><div class="stack"><div class="paper"><b class="t">Room code</b><input id="cd" maxlength="5" placeholder="ABCDE" autocomplete="off"></div><button class="btn pk" id="jn">Join</button><button class="btn gh" id="bk">Back</button><div class="toast">${msg}</div></div>`);
+frame(`<h1>Join Room</h1><p class="sub">Type the 5-letter code your partner sent you.</p><div class="stack"><div class="paper"><b class="t">Room code</b><input id="cd" maxlength="5" placeholder="ABCDE" autocomplete="off" autocapitalize="characters"></div><button class="btn pk" id="jn">Join</button><button class="btn gh" id="bk">Back</button><div class="toast">${msg}</div></div>`);
 $('#bk').onclick=()=>home();
 const go=()=>{const c=($('#cd').value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');c.length==5?enter(c,'guest'):joinScreen('The code has 5 characters.')};
-$('#jn').onclick=go;$('#cd').onkeydown=e=>e.key=='Enter'&&go()}
+$('#jn').onclick=go;$('#cd').onkeydown=e=>e.key=='Enter'&&go();$('#cd').focus()}
+
 function mkRoom(c,role){return new Promise((res,rej)=>{
 const hs={},pl=[];let conn=null,done=false,peer;
-const id='wyeit-'+c.toLowerCase();
+const id='wyeit-v2-'+c.toLowerCase();
 const fire=(e,d)=>(hs[e]||[]).forEach(f=>f({isMe:false,data:d}));
 const ping=()=>pl.forEach(f=>f());
-const R={on(e,f){(hs[e]=hs[e]||[]).push(f);return()=>{hs[e]=(hs[e]||[]).filter(x=>x!==f)}},
-emit(e,d){if(conn&&conn.open)conn.send({e,d})},
-onPeers(f){pl.push(f);return()=>{const i=pl.indexOf(f);if(i>=0)pl.splice(i,1)}},
-peers(){return conn&&conn.open?[1,2]:[1]},
-async leave(){try{conn&&conn.close()}catch(x){}try{peer.destroy()}catch(x){}}};
-const bind=cn=>{cn.on('open',()=>{conn=cn;ping()});cn.on('data',m=>m&&m.e&&fire(m.e,m.d));cn.on('close',()=>{if(conn===cn){conn=null;fire('bye',1);ping()}})};
-const fail=e=>{if(!done){done=true;try{peer.destroy()}catch(x){}rej(e)}};
+const R={
+  on(e,f){(hs[e]=hs[e]||[]).push(f);return()=>{hs[e]=(hs[e]||[]).filter(x=>x!==f)}},
+  emit(e,d){if(conn&&conn.open)conn.send({e,d})},
+  onPeers(f){pl.push(f);return()=>{const i=pl.indexOf(f);if(i>=0)pl.splice(i,1)}},
+  peers(){return conn&&conn.open?[1,2]:[1]},
+  async leave(){try{conn&&conn.close()}catch(x){}try{peer&&peer.destroy()}catch(x){}}
+};
+const bind=cn=>{
+  conn=cn;
+  cn.on('data',m=>m&&m.e&&fire(m.e,m.d));
+  cn.on('close',()=>{if(conn===cn){conn=null;fire('bye',1);ping()}});
+  if(cn.open)ping();
+  else cn.on('open',ping);
+};
+const fail=e=>{if(!done){done=true;try{peer&&peer.destroy()}catch(x){}rej(e)}};
 const ok=()=>{if(!done){done=true;res(R)}};
-if(role=='host'){peer=new Peer(id);
-peer.on('open',ok);
-peer.on('connection',cn=>{if(conn&&conn.open){cn.on('open',()=>cn.close());return}bind(cn)});
-peer.on('error',fail)}
-else{peer=new Peer();
-peer.on('open',()=>{const cn=peer.connect(id,{reliable:true});cn.on('open',()=>{bind(cn);conn=cn;ok()});cn.on('error',fail)});
-peer.on('error',fail)}
-setTimeout(()=>fail(new Error('timeout')),12000)})}
+
+const peerOpts={debug:1,config:{iceServers:ICE_SERVERS}};
+
+if(role=='host'){
+  peer=new Peer(id,peerOpts);
+  peer.on('open',ok);
+  peer.on('connection',cn=>{
+    if(conn&&conn.open){cn.on('open',()=>cn.close());return}
+    bind(cn);
+  });
+  peer.on('error',fail);
+}else{
+  peer=new Peer(peerOpts);
+  peer.on('open',()=>{
+    const cn=peer.connect(id,{reliable:true});
+    cn.on('open',()=>{bind(cn);ok()});
+    cn.on('error',fail);
+  });
+  peer.on('error',fail);
+}
+setTimeout(()=>fail(new Error('timeout')),20000)})}
+
 async function enter(c,role){
-code=c;me=role;frame('<h1>Opening the door…</h1>');
-try{room=await mkRoom(c,role)}catch(e){return home(role=='host'?'Could not create the room. Please try again.':'Could not find that room. Check the code and try again.')}
+code=c;me=role;frame(`<h1>${role=='host'?'Creating room…':'Connecting to partner…'}</h1><p class="sub">Setting up a direct link between India & the Philippines…</p>`);
+try{room=await mkRoom(c,role)}catch(e){return home(role=='host'?'Could not create the room. Check your internet and try again.':'Could not reach that room. Double-check the 5-letter code or ask your partner to recreate it.')}
 S={lvl:0,ph:'play',paused:false,hint:false,started:false};ready=false;help=false;
-unsub=[room.on('st',m=>{if(m.isMe||!m.data||!m.data.s)return;S=m.data.s;if(S.started){ready=true;draw()}}),
-room.on('hi',m=>{if(!m.isMe&&me=='host'){send();pc()}}),
-room.on('bye',m=>{if(!m.isMe)toast('Your partner left the room.')}),
-room.onPeers(()=>pc())];
+unsub=[
+  room.on('st',m=>{if(m.isMe||!m.data||!m.data.s)return;S=m.data.s;if(S.started){ready=true;draw()}}),
+  room.on('hi',m=>{if(!m.isMe&&me=='host'){send();pc()}}),
+  room.on('bye',m=>{if(!m.isMe)toast('Your partner disconnected.')}),
+  room.onPeers(()=>{pc();if(me=='guest'&&room.peers().length>1)room.emit('hi',1)})
+];
 if(me=='guest')room.emit('hi',1);
 lobby()}
-function pc(){const e=$('#pc');if(e)e.textContent=room.peers().length>1?'Your partner is here. Ready when you are.':'Waiting for your partner to join…'}
+
+function pc(){
+  const e=$('#pc');
+  if(!e)return;
+  const connected=room&&room.peers().length>1;
+  e.textContent=connected
+    ?(me=='host'?'Your partner is connected! Tap Begin whenever you’re ready.':'Connected! Waiting for the host to begin…')
+    :(me=='host'?'Waiting for your partner to join…':'Connecting to host…');
+}
+
 function lobby(){
-frame(`<h1>Game Lobby</h1><p class="sub">${me=='host'?'Send this room code to your partner':'You’re in room '+code}</p><div class="stack"><div class="code">${code}</div><p class="sub" id="pc">${me=='host'?'Waiting for your partner to join…':'Waiting for the host to begin…'}</p>
-<div class="paper"><b class="t">Quick tip</b><p class="riddle">One of you describes the secret word without saying it, and the other guesses. Tap How to Play for the full rules.</p></div>
-${me=='host'?'<button class="btn" id="go">Begin the Escape</button>':''}<button class="btn pk" id="hw">How to Play</button><button class="btn gh" id="ex">Exit</button></div>`);
+frame(`<h1>Game Lobby</h1><p class="sub">${me=='host'?'Tap the code to copy and send to your partner':'You’re in room '+code}</p><div class="stack"><div class="code" id="cp" title="Tap to copy">${code}</div><p class="sub" id="pc"></p>
+<div class="paper"><b class="t">Playing as: ${mySide=='indian'?'🇮🇳 Indian Partner':'🇵🇭 Filipino Partner'}</b><p class="riddle">On ${mySide=='indian'?'Filipino':'Indian'} rounds, you’ll guess the secret word. On ${mySide=='indian'?'Indian':'Filipino'} rounds, you’ll describe it!</p></div>
+${me=='host'?'<button class="btn" id="go">Begin the Escape</button>':''}<button class="btn pk" id="hw">How to Play</button><button class="btn gh" id="ex">Exit</button><div class="toast" id="ts"></div></div>`);
+$('#cp').onclick=()=>{navigator.clipboard?.writeText(code);toast('Code copied!')};
 $('#ex').onclick=exit;$('#hw').onclick=howto;if(room)pc();
 if(me=='host')$('#go').onclick=()=>{S.started=true;ready=true;send();draw()}}
+
 function send(){room&&room.emit('st',{s:S})}
 function set(p){Object.assign(S,p);send();draw()}
-function inp(w){return `<div class="blanks">${(S.hint?w[0]:'_')+' _'.repeat(w.length-1)}</div><input id="gi" placeholder="Your answer" autocomplete="off"><button class="btn" id="ck">Unlock</button><button class="btn gh" id="hn">Hint: first letter</button>`}
+function inp(w){return `<div class="blanks">${(S.hint?w[0]:'_')+' _'.repeat(w.length-1)}</div><input id="gi" placeholder="Type answer here" autocomplete="off" autocapitalize="characters"><button class="btn" id="ck">Unlock</button><button class="btn gh" id="hn">Hint: first letter</button>`}
+
 function draw(){
 if(S.ph=='win')return win();
-const L=LV[S.lvl],g=L.g,guesser=g=='both'||g==me,last=S.lvl==LV.length-1;
+const prevInput=$('#gi')?$('#gi').value:'';
+const hadFocus=document.activeElement&&document.activeElement.id=='gi';
+
+const L=LV[S.lvl];
+const isGuide=(L.guide===mySide);
+const last=S.lvl==LV.length-1;
 const hr=LV.map((_,i)=>i<S.lvl||(i==S.lvl&&S.ph=='solved')?'♥':'<u>♥</u>').join('');
 let b;
-if(S.ph=='solved')b=`<div class="paper"><span class="tag">Unlocked</span><div class="word">${L.w[0]}</div><p class="riddle">${L.f}</p><button class="btn pk" id="nx">${last?'Open the final door':'Next room'}</button></div>`;
-else if(g=='both')b=`<div class="paper"><span class="tag">${L.c}</span><p class="riddle">${me=='host'?L.hr:L.gr}</p><p class="note">Your partner has the other half of the clue. Talk to each other, then type the word.</p>${inp(L.w[0])}</div>`;
-else if(guesser)b=`<div class="paper"><span class="tag">${L.c}</span><p class="riddle">${L.r}</p><p class="note">Your partner can see the answer and will describe it to you.</p>${inp(L.w[0])}</div>`;
-else b=`<div class="paper"><span class="tag">${L.c}</span><p class="riddle">You are the guide. Help your partner guess this without saying the word.</p><div class="word">${L.w[0]}</div></div>`;
+if(S.ph=='solved'){
+  b=`<div class="paper"><span class="tag">Unlocked</span><div class="word">${L.w[0]}</div><p class="riddle">${L.f}</p><button class="btn pk" id="nx">${last?'Open the final door':'Next room'}</button></div>`;
+}else if(L.guide=='both'){
+  b=`<div class="paper"><span class="tag">${L.c}</span><p class="riddle">${mySide=='filipino'?L.fr:L.ir}</p><p class="note">Your partner has the other half of the clue. Talk to each other, then type the word.</p>${inp(L.w[0])}</div>`;
+}else if(!isGuide){
+  b=`<div class="paper"><span class="tag">${L.c} — Your Turn to Guess</span><p class="riddle">${L.r}</p><p class="note">Your partner sees the secret word and will describe it to you.</p>${inp(L.w[0])}</div>`;
+}else{
+  b=`<div class="paper"><span class="tag">${L.c} — You Are the Guide</span><p class="riddle">Describe this word to your partner without saying it!</p><div class="word">${L.w[0]}</div><p class="note">Waiting for your partner to type the answer…</p></div>`;
+}
+
 frame(`<div class="hud"><h2>Level ${S.lvl+1} of ${LV.length}</h2><span class="hearts">${hr}</span><span><button class="btn sm gh" id="hp">?</button><button class="btn sm" id="pz">Pause</button><button class="btn sm pk" id="ex">Exit</button></span></div>
 <div class="grid two">${scene(S.ph=='solved')}<div>${b}<div class="toast" id="ts"></div></div></div>
 ${S.paused?`<div class="ov"><div class="in"><h1>Paused</h1><p class="sub">Take a breather. The game is paused for both of you.</p><button class="btn" id="rs">Resume</button><button class="btn gh" id="ex2">Exit game</button></div></div>`:''}
 ${help?`<div class="ov"><div class="in"><h1>How to Play</h1><div class="paper">${HOW}</div><button class="btn" id="hc">Got it</button></div></div>`:''}`);
+
 $('#pz').onclick=()=>set({paused:true});$('#ex').onclick=exit;$('#hp').onclick=()=>{help=true;draw()};
 if($('#hc'))$('#hc').onclick=()=>{help=false;draw()};
 if(S.paused){$('#rs').onclick=()=>set({paused:false});$('#ex2').onclick=exit}
 if($('#nx'))$('#nx').onclick=()=>last?set({ph:'win'}):set({lvl:S.lvl+1,ph:'play',hint:false});
 if($('#ck'))$('#ck').onclick=check;if($('#hn'))$('#hn').onclick=()=>set({hint:true});
-if($('#gi')){$('#gi').onkeydown=e=>e.key=='Enter'&&check()}}
+if($('#gi')){
+  $('#gi').value=prevInput;
+  $('#gi').onkeydown=e=>e.key=='Enter'&&check();
+  if(hadFocus)$('#gi').focus();
+}}
+
 function check(){const v=norm($('#gi').value);if(!v)return;
 if(LV[S.lvl].w.some(x=>norm(x)==v))set({ph:'solved'});else toast('Not quite. Try again.')}
 function toast(t){const e=$('#ts');if(e)e.textContent=t}
