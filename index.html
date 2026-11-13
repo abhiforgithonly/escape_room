@@ -2,6 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Will You Escape in Time?</title>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--page:#7a5fd0;--wall:#43306f;--line:#2f2054;--ink:#2f2054;--gold:#f6b53c;--gold2:#d98f16;--pink:#ff86b3;--pink2:#d95c8b;--paper:#fbeed3;--door:#f4c78a;--door2:#e3a45c;--head:'Chewy','Fredoka',system-ui,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -77,9 +78,30 @@ frame(`<h1>Join Room</h1><p class="sub">Type the code your partner sent you.</p>
 $('#bk').onclick=()=>home();
 const go=()=>{const c=($('#cd').value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');c.length==5?enter(c,'guest'):joinScreen('The code has 5 characters.')};
 $('#jn').onclick=go;$('#cd').onkeydown=e=>e.key=='Enter'&&go()}
+function mkRoom(c,role){return new Promise((res,rej)=>{
+const hs={},pl=[];let conn=null,done=false,peer;
+const id='wyeit-'+c.toLowerCase();
+const fire=(e,d)=>(hs[e]||[]).forEach(f=>f({isMe:false,data:d}));
+const ping=()=>pl.forEach(f=>f());
+const R={on(e,f){(hs[e]=hs[e]||[]).push(f);return()=>{hs[e]=(hs[e]||[]).filter(x=>x!==f)}},
+emit(e,d){if(conn&&conn.open)conn.send({e,d})},
+onPeers(f){pl.push(f);return()=>{const i=pl.indexOf(f);if(i>=0)pl.splice(i,1)}},
+peers(){return conn&&conn.open?[1,2]:[1]},
+async leave(){try{conn&&conn.close()}catch(x){}try{peer.destroy()}catch(x){}}};
+const bind=cn=>{cn.on('open',()=>{conn=cn;ping()});cn.on('data',m=>m&&m.e&&fire(m.e,m.d));cn.on('close',()=>{if(conn===cn){conn=null;fire('bye',1);ping()}})};
+const fail=e=>{if(!done){done=true;try{peer.destroy()}catch(x){}rej(e)}};
+const ok=()=>{if(!done){done=true;res(R)}};
+if(role=='host'){peer=new Peer(id);
+peer.on('open',ok);
+peer.on('connection',cn=>{if(conn&&conn.open){cn.on('open',()=>cn.close());return}bind(cn)});
+peer.on('error',fail)}
+else{peer=new Peer();
+peer.on('open',()=>{const cn=peer.connect(id,{reliable:true});cn.on('open',()=>{bind(cn);conn=cn;ok()});cn.on('error',fail)});
+peer.on('error',fail)}
+setTimeout(()=>fail(new Error('timeout')),12000)})}
 async function enter(c,role){
 code=c;me=role;frame('<h1>Opening the door…</h1>');
-try{const r=await claude.use('room');if(!r)throw 0;room=await r.join('lv-'+c.toLowerCase())}catch(e){return home('Multiplayer works when the page is opened from the shared claude.ai link.')}
+try{room=await mkRoom(c,role)}catch(e){return home(role=='host'?'Could not create the room. Please try again.':'Could not find that room. Check the code and try again.')}
 S={lvl:0,ph:'play',paused:false,hint:false,started:false};ready=false;help=false;
 unsub=[room.on('st',m=>{if(m.isMe||!m.data||!m.data.s)return;S=m.data.s;if(S.started){ready=true;draw()}}),
 room.on('hi',m=>{if(!m.isMe&&me=='host'){send();pc()}}),
