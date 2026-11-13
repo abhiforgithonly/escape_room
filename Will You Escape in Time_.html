@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Will You Escape in Time?</title>
+<link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--page:#7a5fd0;--wall:#43306f;--line:#2f2054;--ink:#2f2054;--gold:#f6b53c;--gold2:#d98f16;--pink:#ff86b3;--pink2:#d95c8b;--paper:#fbeed3;--door:#f4c78a;--door2:#e3a45c;--head:'Chewy','Fredoka',system-ui,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#6a50bd}}
+:root[data-theme="dark"]{--page:#6a50bd}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:var(--page);font-family:'Fredoka',system-ui,sans-serif;color:var(--ink);display:flex;justify-content:center;align-items:flex-start}
+#app{width:100%;max-width:1000px;padding:clamp(10px,3vw,28px)}
+.frame{position:relative;background:var(--wall) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='48'%3E%3Cpath d='M0 1.5H72M0 25.5H72M1.5 0V24M37.5 24V48' stroke='%2337265f' stroke-width='3' fill='none'/%3E%3C/svg%3E");border-radius:10px;padding:clamp(16px,4vw,40px);overflow:hidden;min-height:min(86vh,720px);color:#fff}
+.vine{position:absolute;top:0;pointer-events:none}.vl{left:0}.vr{right:0;transform:scaleX(-1)}
+h1{font-family:var(--head);font-weight:400;color:var(--gold);font-size:clamp(2.1rem,7vw,4rem);line-height:1.02;margin:.15em 0;text-align:center;text-shadow:0 3px 0 var(--line);letter-spacing:.01em}
+h2{font-family:var(--head);font-weight:400;color:var(--gold);margin:0;font-size:clamp(1.3rem,3.4vw,1.9rem);text-shadow:0 2px 0 var(--line)}
+.sub{text-align:center;color:#e9ddff;margin:0 auto 14px;font-size:clamp(.95rem,2.4vw,1.1rem);max-width:520px}
+.btn{font:inherit;font-weight:600;font-size:1.08rem;color:var(--ink);background:var(--gold);border:0;border-radius:12px;padding:12px 20px;cursor:pointer;box-shadow:0 4px 0 var(--gold2);display:block;width:100%;margin:12px 0}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--gold2)}
+.btn.pk{background:var(--pink);box-shadow:0 4px 0 var(--pink2)}
+.btn.gh{background:#5b4491;color:#fff;box-shadow:0 4px 0 #3b2a6b}
+.btn.sm{display:inline-block;width:auto;padding:7px 14px;font-size:.92rem;margin:0 0 0 6px}
+.stack{max-width:380px;margin:0 auto}
+.paper{background:var(--paper);color:var(--ink);border-radius:12px;padding:16px 18px;border:3px solid var(--line);box-shadow:0 5px 0 #0003;margin:12px 0}
+.paper b.t{font-family:var(--head);font-weight:400;font-size:1.25rem;color:var(--pink2)}
+input{font:inherit;font-size:1.25rem;font-weight:600;text-align:center;letter-spacing:.14em;text-transform:uppercase;width:100%;padding:11px;border-radius:10px;border:3px solid var(--line);background:#fff;color:var(--ink);margin:8px 0 0}
+input:focus{outline:3px solid var(--pink)}
+.code{font-family:var(--head);font-size:clamp(2.4rem,9vw,3.6rem);letter-spacing:.2em;text-align:center;color:var(--ink);background:var(--paper);border:3px dashed var(--pink2);border-radius:12px;padding:6px 0 6px .2em;margin:8px 0}
+.scene{display:flex;justify-content:center;align-items:flex-end;gap:clamp(14px,5vw,44px);padding-top:10px;border-bottom:16px solid #2a1c4d;margin:16px 0}
+.door{position:relative;width:clamp(74px,18vw,132px);aspect-ratio:.62;background:var(--door);border:7px solid #f8dba9;outline:3px solid var(--line);border-bottom:0;border-radius:3px 3px 0 0;box-shadow:inset -8px 0 0 #0000001a}
+.door:before{content:"";position:absolute;inset:14% 12% auto;height:30%;border:3px solid var(--door2);border-radius:3px}
+.door i{position:absolute;left:50%;top:-1px;transform:translate(-50%,-50%);background:#fff;color:var(--ink);font:600 .78rem 'Fredoka';font-style:normal;padding:1px 7px;border:2px solid var(--line);border-radius:3px}
+.door s{position:absolute;right:9%;top:55%;width:12%;aspect-ratio:1;background:var(--gold);border-radius:50%;border:2px solid var(--line)}
+.door.open{background:#24173f;box-shadow:inset 0 0 30px #ff86b388}.door.open:before{display:none}
+.chest{width:clamp(90px,22vw,150px);margin-bottom:-2px}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;position:relative;z-index:2}
+.hearts{font-size:1.5rem;letter-spacing:.1em;color:var(--pink)}.hearts u{text-decoration:none;color:#6d5aa3}
+.grid{display:grid;gap:14px;position:relative;z-index:2}
+@media(min-width:760px){.grid.two{grid-template-columns:1fr 1fr;align-items:center}.grid .scene{margin:0}}
+.tag{display:inline-block;background:var(--pink);color:#fff;font-weight:600;border-radius:6px;padding:2px 10px;font-size:.85rem;margin-bottom:6px}
+.riddle{font-size:1.1rem;line-height:1.45;margin:.3em 0}
+.blanks{font-family:var(--head);font-size:2rem;letter-spacing:.3em;text-align:center;color:var(--pink2);margin:6px 0 0}
+.word{font-family:var(--head);font-size:clamp(2.2rem,8vw,3.2rem);color:var(--pink2);text-align:center;margin:8px 0}
+.note{font-size:.95rem;color:#6a5a92;margin:.3em 0 0}
+.ov{position:fixed;inset:0;background:#1d1238ee;z-index:20;overflow:auto;padding:max(20px,env(safe-area-inset-top,0px)) 18px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff}
+.ov .in{width:100%;max-width:480px}
+ol.how{list-style:none;counter-reset:s;padding:0;margin:0;text-align:left}
+ol.how li{counter-increment:s;position:relative;padding:6px 0 6px 44px;line-height:1.4}
+ol.how li:before{content:counter(s);position:absolute;left:0;top:5px;width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--ink);font-family:var(--head);font-size:1.2rem;display:flex;align-items:center;justify-content:center;border:2px solid var(--line)}
+.toast{text-align:center;min-height:1.5em;font-weight:600;color:var(--gold);position:relative;z-index:2}
+</style></head><body>
+<div id="app"></div>
+<template id="vn"><svg class="vine" width="120" height="150" viewBox="0 0 120 150" fill="none"><path d="M10 0V70Q10 90 22 96M40 0V40M70 0Q70 60 58 82Q54 100 66 112" stroke="#2f2054" stroke-width="6" stroke-linecap="round"/><circle cx="22" cy="100" r="7" fill="#2f2054"/><circle cx="40" cy="46" r="6" fill="#2f2054"/><circle cx="66" cy="116" r="7" fill="#2f2054"/></svg></template>
+<script>
+const CHEST='<svg class="chest" viewBox="0 0 150 100"><rect x="8" y="42" width="134" height="54" rx="4" fill="#c4542f" stroke="#2f2054" stroke-width="4"/><path d="M8 42Q8 8 75 8Q142 8 142 42Z" fill="#a8401f" stroke="#2f2054" stroke-width="4"/><rect x="30" y="8" width="12" height="88" fill="#6e2a16"/><rect x="108" y="8" width="12" height="88" fill="#6e2a16"/><rect x="64" y="38" width="22" height="26" rx="4" fill="#f6b53c" stroke="#2f2054" stroke-width="3"/><circle cx="75" cy="50" r="4" fill="#2f2054"/></svg>';
+const LV=[
+{c:'Filipino',w:['PAROL'],g:'host',r:'I’m a glowing star that never sleeps in December. Filipinos hang me in windows, and I’m made of bamboo and paper. What am I?',f:'The parol is a star-shaped Christmas lantern. The Philippines also has the longest Christmas season in the world, starting as soon as the “-ber” months begin. Yes, even September.'},
+{c:'Indian',w:['RANGOLI','KOLAM'],g:'guest',r:'I’m colourful art made on the floor with powder or flower petals, right at the doorstep for Diwali. No, I’m not a pizza. I welcome Goddess Lakshmi. What am I?',f:'Rangoli is floor art made with coloured powder, rice flour or petals. It’s meant to welcome good luck into the home.'},
+{c:'Filipino',w:['HALOHALO'],g:'host',r:'I’m a cold, messy dessert: shaved ice, sweet beans, jelly, leche flan and ube ice cream in one tall glass. My name means “mix-mix”. What am I?',f:'Halo-halo means “mix-mix”. You stir everything together before the first bite, and the purple ube on top is the star.'},
+{c:'Indian',w:['MEHENDI','MEHNDI','HENNA'],g:'guest',r:'Brides wear me on their hands for days. I’m made from crushed leaves, smell earthy, and you have to sit still for hours while I dry. What am I?',f:'Mehendi (henna) is applied before weddings. The popular legend says the darker the colour, the more your partner loves you.'},
+{c:'Both cultures',w:['MAHAL'],g:'both',hr:'In Filipino, “Mahal kita” means “I love you”. Which 5-letter word means “love” and also “expensive” at the market?',gr:'Taj ______ is the famous monument of love built by Shah Jahan for his queen, in Agra. Fill in the blank.',f:'“Mahal” means love, and also expensive, in Filipino. In Hindi and Urdu it means palace. Love is priceless, but it’s also a little pricey.'}
+];
+const $=s=>document.querySelector(s),app=$('#app');
+let room=null,code='',me='host',S={lvl:0,ph:'play',paused:false,hint:false,started:false},unsub=[],ready=false,help=false;
+const norm=s=>s.toUpperCase().replace(/[^A-Z]/g,'');
+function frame(inner){const v=$('#vn').innerHTML;app.innerHTML=`<div class="frame">${v.replace('class="vine"','class="vine vl"')}${v.replace('class="vine"','class="vine vr"')}${inner}</div>`}
+function scene(o){return `<div class="scene"><div class="door ${o?'open':''}"><i>01</i><s></s></div>${CHEST}<div class="door"><i>02</i><s></s></div></div>`}
+const HOW=`<ol class="how"><li><b>One of you starts, one joins.</b> Tap Start Game to get a room code and send it to your partner. They tap Join Room and type it in.</li><li><b>Take turns being the guide.</b> On Filipino levels the Filipino partner sees the secret word and the Indian partner guesses. On Indian levels it flips.</li><li><b>Describe, don’t say.</b> The guide explains, acts out or hums the answer without saying the word. Funny voices are encouraged.</li><li><b>Type the answer to open the door.</b> Stuck? Use the hint button for the first letter.</li><li><b>Learn something new.</b> Every solved door shares a fun fact about the culture.</li><li><b>Finish all five doors together.</b> Pause or exit any time from the top bar. Both of you see the same game.</li></ol>`;
+function howto(){frame(`<h1>How to Play</h1><div class="paper">${HOW}</div><div class="stack"><button class="btn" id="bk">Back</button></div>`);$('#bk').onclick=()=>room?lobby():home()}
+function home(msg=''){
+frame(`<h1>Will You Escape<br>in Time?</h1><p class="sub">An Indian and Filipino escape room for two. Solve the clues together before the lights go out.</p>${scene()}
+<div class="stack"><button class="btn" id="st">Start Game</button><button class="btn pk" id="jn0">Join Room</button><button class="btn gh" id="hw">How to Play</button></div><div class="toast">${msg}</div>`);
+$('#st').onclick=()=>enter(Array.from({length:5},()=>'ABCDEFGHJKMNPQRSTUVWXYZ'[Math.random()*23|0]).join(''),'host');
+$('#hw').onclick=howto;$('#jn0').onclick=joinScreen}
+function joinScreen(msg=''){
+frame(`<h1>Join Room</h1><p class="sub">Type the code your partner sent you.</p><div class="stack"><div class="paper"><b class="t">Room code</b><input id="cd" maxlength="5" placeholder="ABCDE" autocomplete="off"></div><button class="btn pk" id="jn">Join</button><button class="btn gh" id="bk">Back</button><div class="toast">${msg}</div></div>`);
+$('#bk').onclick=()=>home();
+const go=()=>{const c=($('#cd').value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');c.length==5?enter(c,'guest'):joinScreen('The code has 5 characters.')};
+$('#jn').onclick=go;$('#cd').onkeydown=e=>e.key=='Enter'&&go()}
+async function enter(c,role){
+code=c;me=role;frame('<h1>Opening the door…</h1>');
+try{const r=await claude.use('room');if(!r)throw 0;room=await r.join('lv-'+c.toLowerCase())}catch(e){return home('Multiplayer works when the page is opened from the shared claude.ai link.')}
+S={lvl:0,ph:'play',paused:false,hint:false,started:false};ready=false;help=false;
+unsub=[room.on('st',m=>{if(m.isMe||!m.data||!m.data.s)return;S=m.data.s;if(S.started){ready=true;draw()}}),
+room.on('hi',m=>{if(!m.isMe&&me=='host'){send();pc()}}),
+room.on('bye',m=>{if(!m.isMe)toast('Your partner left the room.')}),
+room.onPeers(()=>pc())];
+if(me=='guest')room.emit('hi',1);
+lobby()}
+function pc(){const e=$('#pc');if(e)e.textContent=room.peers().length>1?'Your partner is here. Ready when you are.':'Waiting for your partner to join…'}
+function lobby(){
+frame(`<h1>Game Lobby</h1><p class="sub">${me=='host'?'Send this room code to your partner':'You’re in room '+code}</p><div class="stack"><div class="code">${code}</div><p class="sub" id="pc">${me=='host'?'Waiting for your partner to join…':'Waiting for the host to begin…'}</p>
+<div class="paper"><b class="t">Quick tip</b><p class="riddle">One of you describes the secret word without saying it, and the other guesses. Tap How to Play for the full rules.</p></div>
+${me=='host'?'<button class="btn" id="go">Begin the Escape</button>':''}<button class="btn pk" id="hw">How to Play</button><button class="btn gh" id="ex">Exit</button></div>`);
+$('#ex').onclick=exit;$('#hw').onclick=howto;if(room)pc();
+if(me=='host')$('#go').onclick=()=>{S.started=true;ready=true;send();draw()}}
+function send(){room&&room.emit('st',{s:S})}
+function set(p){Object.assign(S,p);send();draw()}
+function inp(w){return `<div class="blanks">${(S.hint?w[0]:'_')+' _'.repeat(w.length-1)}</div><input id="gi" placeholder="Your answer" autocomplete="off"><button class="btn" id="ck">Unlock</button><button class="btn gh" id="hn">Hint: first letter</button>`}
+function draw(){
+if(S.ph=='win')return win();
+const L=LV[S.lvl],g=L.g,guesser=g=='both'||g==me,last=S.lvl==LV.length-1;
+const hr=LV.map((_,i)=>i<S.lvl||(i==S.lvl&&S.ph=='solved')?'♥':'<u>♥</u>').join('');
+let b;
+if(S.ph=='solved')b=`<div class="paper"><span class="tag">Unlocked</span><div class="word">${L.w[0]}</div><p class="riddle">${L.f}</p><button class="btn pk" id="nx">${last?'Open the final door':'Next room'}</button></div>`;
+else if(g=='both')b=`<div class="paper"><span class="tag">${L.c}</span><p class="riddle">${me=='host'?L.hr:L.gr}</p><p class="note">Your partner has the other half of the clue. Talk to each other, then type the word.</p>${inp(L.w[0])}</div>`;
+else if(guesser)b=`<div class="paper"><span class="tag">${L.c}</span><p class="riddle">${L.r}</p><p class="note">Your partner can see the answer and will describe it to you.</p>${inp(L.w[0])}</div>`;
+else b=`<div class="paper"><span class="tag">${L.c}</span><p class="riddle">You are the guide. Help your partner guess this without saying the word.</p><div class="word">${L.w[0]}</div></div>`;
+frame(`<div class="hud"><h2>Level ${S.lvl+1} of ${LV.length}</h2><span class="hearts">${hr}</span><span><button class="btn sm gh" id="hp">?</button><button class="btn sm" id="pz">Pause</button><button class="btn sm pk" id="ex">Exit</button></span></div>
+<div class="grid two">${scene(S.ph=='solved')}<div>${b}<div class="toast" id="ts"></div></div></div>
+${S.paused?`<div class="ov"><div class="in"><h1>Paused</h1><p class="sub">Take a breather. The game is paused for both of you.</p><button class="btn" id="rs">Resume</button><button class="btn gh" id="ex2">Exit game</button></div></div>`:''}
+${help?`<div class="ov"><div class="in"><h1>How to Play</h1><div class="paper">${HOW}</div><button class="btn" id="hc">Got it</button></div></div>`:''}`);
+$('#pz').onclick=()=>set({paused:true});$('#ex').onclick=exit;$('#hp').onclick=()=>{help=true;draw()};
+if($('#hc'))$('#hc').onclick=()=>{help=false;draw()};
+if(S.paused){$('#rs').onclick=()=>set({paused:false});$('#ex2').onclick=exit}
+if($('#nx'))$('#nx').onclick=()=>last?set({ph:'win'}):set({lvl:S.lvl+1,ph:'play',hint:false});
+if($('#ck'))$('#ck').onclick=check;if($('#hn'))$('#hn').onclick=()=>set({hint:true});
+if($('#gi')){$('#gi').onkeydown=e=>e.key=='Enter'&&check()}}
+function check(){const v=norm($('#gi').value);if(!v)return;
+if(LV[S.lvl].w.some(x=>norm(x)==v))set({ph:'solved'});else toast('Not quite. Try again.')}
+function toast(t){const e=$('#ts');if(e)e.textContent=t}
+function win(){frame(`<h1>You Escaped!</h1><p class="sub">Every lock opened, and you did it together.</p>${scene(true)}<div class="stack"><div class="paper"><b class="t">Mahal kita. Pyaar hai.</b><p class="riddle">Your prize: a big bowl of halo-halo, a cup of chai, and a very long hug. Salamat and dhanyavaad for playing.</p></div><button class="btn" id="ag">Play again</button><button class="btn gh" id="ex">Exit</button></div>`);
+$('#ag').onclick=()=>set({lvl:0,ph:'play',hint:false,paused:false});$('#ex').onclick=exit}
+async function exit(){try{room&&room.emit('bye',1);unsub.forEach(u=>u&&u());await room?.leave()}catch(e){}room=null;ready=false;home()}
+home();
+</script></body></html>
