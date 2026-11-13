@@ -1,56 +1,60 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Will You Escape in Time?</title>
 <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--page:#7a5fd0;--wall:#43306f;--line:#2f2054;--ink:#2f2054;--gold:#f6b53c;--gold2:#d98f16;--pink:#ff86b3;--pink2:#d95c8b;--paper:#fbeed3;--door:#f4c78a;--door2:#e3a45c;--head:'Chewy','Fredoka',system-ui,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--page:#7a5fd0;--wall:#43306f;--line:#2f2054;--ink:#2f2054;--gold:#f6b53c;--gold2:#d98f16;--pink:#ff86b3;--pink2:#d95c8b;--paper:#fbeed3;--door:#f4c78a;--door2:#e3a45c;--head:'Chewy','Fredoka',system-ui,sans-serif}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#6a50bd}}
 :root[data-theme="dark"]{--page:#6a50bd}
-*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;min-height:100vh;background:var(--page);font-family:'Fredoka',system-ui,sans-serif;color:var(--ink);display:flex;justify-content:center;align-items:flex-start}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;min-height:-webkit-fill-available;background:var(--page);font-family:'Fredoka',system-ui,sans-serif;color:var(--ink);display:flex;justify-content:center;align-items:flex-start;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 #app{width:100%;max-width:1000px;padding:clamp(10px,3vw,28px)}
-.frame{position:relative;background:var(--wall) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='48'%3E%3Cpath d='M0 1.5H72M0 25.5H72M1.5 0V24M37.5 24V48' stroke='%2337265f' stroke-width='3' fill='none'/%3E%3C/svg%3E");border-radius:10px;padding:clamp(16px,4vw,40px);overflow:hidden;min-height:min(86vh,720px);color:#fff}
-.vine{position:absolute;top:0;pointer-events:none}.vl{left:0}.vr{right:0;transform:scaleX(-1)}
-h1{font-family:var(--head);font-weight:400;color:var(--gold);font-size:clamp(2.1rem,7vw,4rem);line-height:1.02;margin:.15em 0;text-align:center;text-shadow:0 3px 0 var(--line);letter-spacing:.01em}
+.frame{position:relative;background:var(--wall) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='48'%3E%3Cpath d='M0 1.5H72M0 25.5H72M1.5 0V24M37.5 24V48' stroke='%2337265f' stroke-width='3' fill='none'/%3E%3C/svg%3E");border-radius:10px;padding:clamp(16px,4vw,40px);min-height:min(86vh,720px);color:#fff}
+.vine{position:absolute;top:0;pointer-events:none;z-index:0}.vl{left:0}.vr{right:0;transform:scaleX(-1)}
+h1{font-family:var(--head);font-weight:400;color:var(--gold);font-size:clamp(2.1rem,7vw,4rem);line-height:1.02;margin:.15em 0;text-align:center;text-shadow:0 3px 0 var(--line);letter-spacing:.01em;position:relative;z-index:2}
 h2{font-family:var(--head);font-weight:400;color:var(--gold);margin:0;font-size:clamp(1.3rem,3.4vw,1.9rem);text-shadow:0 2px 0 var(--line)}
-.sub{text-align:center;color:#e9ddff;margin:0 auto 14px;font-size:clamp(.95rem,2.4vw,1.1rem);max-width:520px}
-.btn{font:inherit;font-weight:600;font-size:1.08rem;color:var(--ink);background:var(--gold);border:0;border-radius:12px;padding:12px 20px;cursor:pointer;box-shadow:0 4px 0 var(--gold2);display:block;width:100%;margin:12px 0}
+.sub{text-align:center;color:#e9ddff;margin:0 auto 14px;font-size:clamp(.95rem,2.4vw,1.1rem);max-width:520px;position:relative;z-index:2}
+.btn{font:inherit;font-weight:600;font-size:1.08rem;color:var(--ink);background:var(--gold);border:0;border-radius:12px;padding:12px 20px;cursor:pointer;box-shadow:0 4px 0 var(--gold2);display:block;width:100%;margin:12px 0;position:relative;z-index:5;touch-action:manipulation;-webkit-appearance:none}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--gold2)}
 .btn.pk{background:var(--pink);box-shadow:0 4px 0 var(--pink2)}
 .btn.gh{background:#5b4491;color:#fff;box-shadow:0 4px 0 #3b2a6b}
 .btn.sm{display:inline-block;width:auto;padding:7px 14px;font-size:.92rem;margin:0 0 0 6px}
-.stack{max-width:380px;margin:0 auto}
-.paper{background:var(--paper);color:var(--ink);border-radius:12px;padding:16px 18px;border:3px solid var(--line);box-shadow:0 5px 0 #0003;margin:12px 0}
+.stack{max-width:380px;margin:0 auto;position:relative;z-index:5}
+.paper{background:var(--paper);color:var(--ink);border-radius:12px;padding:16px 18px;border:3px solid var(--line);box-shadow:0 5px 0 #0003;margin:12px 0;position:relative;z-index:5}
 .paper b.t{font-family:var(--head);font-weight:400;font-size:1.25rem;color:var(--pink2)}
-input{font:inherit;font-size:1.25rem;font-weight:600;text-align:center;letter-spacing:.14em;text-transform:uppercase;width:100%;padding:11px;border-radius:10px;border:3px solid var(--line);background:#fff;color:var(--ink);margin:8px 0 0;position:relative;z-index:5}
-input:focus{outline:3px solid var(--pink)}
-.code{font-family:var(--head);font-size:clamp(2.4rem,9vw,3.6rem);letter-spacing:.2em;text-align:center;color:var(--ink);background:var(--paper);border:3px dashed var(--pink2);border-radius:12px;padding:6px 0 6px .2em;margin:8px 0;cursor:pointer}
-.scene{display:flex;justify-content:center;align-items:flex-end;gap:clamp(14px,5vw,44px);padding-top:10px;border-bottom:16px solid #2a1c4d;margin:16px 0}
+/* iOS Safari safe input styling: >= 16px prevents auto-zoom lock, explicit user-select enables typing & paste */
+input.txt{font-family:'Fredoka',system-ui,sans-serif;font-size:20px;font-weight:600;text-align:center;letter-spacing:.12em;text-transform:uppercase;width:100%;padding:13px 12px;border-radius:10px;border:3px solid var(--line);background:#fff;color:#2f2054;margin:8px 0 0;display:block;position:relative;z-index:20;pointer-events:auto;-webkit-appearance:none;appearance:none;-webkit-user-select:text !important;user-select:text !important;touch-action:manipulation}
+input.txt:focus{outline:3px solid var(--pink);background:#fffdf7}
+.code{font-family:var(--head);font-size:clamp(2.4rem,9vw,3.6rem);letter-spacing:.2em;text-align:center;color:var(--ink);background:var(--paper);border:3px dashed var(--pink2);border-radius:12px;padding:6px 0 6px .2em;margin:8px 0;cursor:pointer;-webkit-user-select:all;user-select:all;touch-action:manipulation}
+.scene{display:flex;justify-content:center;align-items:flex-end;gap:clamp(14px,5vw,44px);padding-top:10px;border-bottom:16px solid #2a1c4d;margin:16px 0;position:relative;z-index:1}
 .door{position:relative;width:clamp(74px,18vw,132px);aspect-ratio:.62;background:var(--door);border:7px solid #f8dba9;outline:3px solid var(--line);border-bottom:0;border-radius:3px 3px 0 0;box-shadow:inset -8px 0 0 #0000001a}
 .door:before{content:"";position:absolute;inset:14% 12% auto;height:30%;border:3px solid var(--door2);border-radius:3px}
 .door i{position:absolute;left:50%;top:-1px;transform:translate(-50%,-50%);background:#fff;color:var(--ink);font:600 .78rem 'Fredoka';font-style:normal;padding:1px 7px;border:2px solid var(--line);border-radius:3px}
 .door s{position:absolute;right:9%;top:55%;width:12%;aspect-ratio:1;background:var(--gold);border-radius:50%;border:2px solid var(--line)}
 .door.open{background:#24173f;box-shadow:inset 0 0 30px #ff86b388}.door.open:before{display:none}
 .chest{width:clamp(90px,22vw,150px);margin-bottom:-2px}
-.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;position:relative;z-index:2}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;position:relative;z-index:5}
 .hearts{font-size:1.5rem;letter-spacing:.1em;color:var(--pink)}.hearts u{text-decoration:none;color:#6d5aa3}
-.grid{display:grid;gap:14px;position:relative;z-index:2}
+.grid{display:grid;gap:14px;position:relative;z-index:5}
 @media(min-width:760px){.grid.two{grid-template-columns:1fr 1fr;align-items:center}.grid .scene{margin:0}}
 .tag{display:inline-block;background:var(--pink);color:#fff;font-weight:600;border-radius:6px;padding:2px 10px;font-size:.85rem;margin-bottom:6px}
 .riddle{font-size:1.1rem;line-height:1.45;margin:.3em 0}
 .blanks{font-family:var(--head);font-size:2rem;letter-spacing:.3em;text-align:center;color:var(--pink2);margin:6px 0 0}
-.word{font-family:var(--head);font-size:clamp(2.2rem,8vw,3.2rem);color:var(--pink2);text-align:center;margin:8px 0}
+.word{font-family:var(--head);font-size:clamp(2.2rem,8vw,3.2rem);color:var(--pink2);text-align:center;margin:8px 0;-webkit-user-select:all;user-select:all;cursor:pointer}
 .note{font-size:.95rem;color:#6a5a92;margin:.3em 0 0}
-.ov{position:fixed;inset:0;background:#1d1238ee;z-index:20;overflow:auto;padding:max(20px,env(safe-area-inset-top,0px)) 18px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff}
+.ov{position:fixed;inset:0;background:#1d1238ee;z-index:30;overflow:auto;padding:max(20px,env(safe-area-inset-top,0px)) 18px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff}
 .ov .in{width:100%;max-width:480px}
 ol.how{list-style:none;counter-reset:s;padding:0;margin:0;text-align:left}
 ol.how li{counter-increment:s;position:relative;padding:6px 0 6px 44px;line-height:1.4}
 ol.how li:before{content:counter(s);position:absolute;left:0;top:5px;width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--ink);font-family:var(--head);font-size:1.2rem;display:flex;align-items:center;justify-content:center;border:2px solid var(--line)}
-.toast{text-align:center;min-height:1.5em;font-weight:600;color:var(--gold);position:relative;z-index:2}
+.toast{text-align:center;min-height:1.5em;font-weight:600;color:var(--gold);position:relative;z-index:5}
 .pill-row{display:flex;gap:8px;margin:8px 0}
-.pill{flex:1;padding:10px;border-radius:10px;border:3px solid var(--line);background:#5b4491;color:#fff;font:inherit;font-weight:600;cursor:pointer}
+.pill{flex:1;padding:10px;border-radius:10px;border:3px solid var(--line);background:#5b4491;color:#fff;font:inherit;font-weight:600;cursor:pointer;touch-action:manipulation}
 .pill.on{background:var(--gold);color:var(--ink)}
+.secret-box{background:#fff6e5;border:2px dashed var(--pink2);border-radius:10px;padding:10px;margin:8px 0;text-align:center}
+.copy-chip{display:inline-block;background:var(--gold);color:var(--ink);font-size:.82rem;font-weight:600;padding:4px 10px;border-radius:8px;margin-top:4px;cursor:pointer;touch-action:manipulation}
 </style></head><body>
 <div id="app"></div>
 <template id="vn"><svg class="vine" width="120" height="150" viewBox="0 0 120 150" fill="none"><path d="M10 0V70Q10 90 22 96M40 0V40M70 0Q70 60 58 82Q54 100 66 112" stroke="#2f2054" stroke-width="6" stroke-linecap="round"/><circle cx="22" cy="100" r="7" fill="#2f2054"/><circle cx="40" cy="46" r="6" fill="#2f2054"/><circle cx="66" cy="116" r="7" fill="#2f2054"/></svg></template>
@@ -67,15 +71,36 @@ const LV=[
 
 const $=s=>document.querySelector(s),app=$('#app');
 let code='',me='host',mySide=localStorage.getItem('wyeit_side')||'indian';
-let S={lvl:0,ph:'play',paused:false,hint:false,started:false};
-let players={},pollTimer=null,help=false,lastSnapshot='',inLobby=false;
+let S={lvl:0,ph:'play',paused:false,hint:false,started:false,ver:0};
+let players={},pollTimer=null,help=false,inLobby=false;
+
+// iOS Safari reliable copy helper
+function copyText(txt, msg='Copied!'){
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(txt).then(()=>toast(msg)).catch(()=>fallbackCopy(txt,msg));
+  }else{
+    fallbackCopy(txt,msg);
+  }
+}
+function fallbackCopy(txt, msg){
+  const ta=document.createElement('textarea');
+  ta.value=txt;
+  ta.setAttribute('readonly','');
+  ta.style.cssText='position:fixed;top:0;left:0;opacity:0;font-size:16px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  ta.setSelectionRange(0,99999);
+  try{document.execCommand('copy');toast(msg);}catch(e){toast('Hold the word to copy');}
+  document.body.removeChild(ta);
+}
 
 const norm=s=>s.toUpperCase().replace(/[^A-Z]/g,'');
 function frame(inner){const v=$('#vn').innerHTML;app.innerHTML=`<div class="frame">${v.replace('class="vine"','class="vine vl"')}${v.replace('class="vine"','class="vine vr"')}${inner}</div>`}
 function scene(o){return `<div class="scene"><div class="door ${o?'open':''}"><i>01</i><s></s></div>${CHEST}<div class="door"><i>02</i><s></s></div></div>`}
-const HOW=`<ol class="how"><li><b>Pick your side & connect.</b> Choose whether you’re the Indian or Filipino partner. One taps Start Game and shares the 5-letter code; the other taps Join Room.</li><li><b>Take turns being the guide.</b> On Filipino levels, the Filipino partner sees the secret word and describes it while the Indian partner guesses. On Indian levels, it flips!</li><li><b>Describe, don’t say.</b> Explain, act out, or hum the answer without saying the word.</li><li><b>Type the answer to open the door.</b> Stuck? Use the hint button for the first letter.</li><li><b>Finish all five doors together.</b> Both of you see the game sync live.</li></ol>`;
+const HOW=`<ol class="how"><li><b>Pick your side & connect.</b> Choose whether you’re the Indian or Filipino partner. One taps Start Game and shares the 5-letter code; the other taps Join Room.</li><li><b>Take turns helping each other.</b> On Filipino levels, the Filipino partner gets the secret word to help describe it. On Indian levels, the Indian partner gets it!</li><li><b>Type or copy the answer.</b> Tap the text box to type your guess (or tap any secret word to copy it) and hit Unlock!</li><li><b>Finish all five doors together.</b> Both of you see the game progress together.</li></ol>`;
 
-function howto(){frame(`<h1>How to Play</h1><div class="paper">${HOW}</div><div class="stack"><button class="btn" id="bk">Back</button></div>`);$('#bk').onclick=()=>code?(S.started?draw(true):lobby()):home()}
+function howto(){frame(`<h1>How to Play</h1><div class="paper">${HOW}</div><div class="stack"><button class="btn" id="bk">Back</button></div>`);$('#bk').onclick=()=>code?(S.started?draw():lobby()):home()}
 
 function setSide(side){
   mySide=side;
@@ -103,12 +128,12 @@ $('#jn0').onclick=()=>joinScreen();
 }
 
 function joinScreen(msg=''){
-frame(`<h1>Join Room</h1><p class="sub">Type the 5-letter code your partner sent you.</p><div class="stack">
+frame(`<h1>Join Room</h1><p class="sub">Type or paste the 5-letter code your partner sent you.</p><div class="stack">
 <div class="pill-row">
   <button class="pill ${mySide=='indian'?'on':''}" id="j-in">🇮🇳 I’m Indian</button>
   <button class="pill ${mySide=='filipino'?'on':''}" id="j-ph">🇵🇭 I’m Filipino</button>
 </div>
-<div class="paper"><b class="t">Room code</b><input id="cd" maxlength="5" placeholder="ABCDE" autocomplete="off" autocapitalize="characters"></div>
+<div class="paper"><b class="t">Room code</b><input id="cd" class="txt" type="text" inputmode="text" maxlength="5" placeholder="ABCDE" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"></div>
 <button class="btn pk" id="jn">Join</button>
 <button class="btn gh" id="bk">Back</button>
 <div class="toast">${msg}</div></div>`);
@@ -120,8 +145,7 @@ const go=()=>{
   c.length===5?joinRoom(c):joinScreen('The code must be 5 characters.');
 };
 $('#jn').onclick=go;
-$('#cd').onkeydown=e=>e.key==='Enter'&&go();
-$('#cd').focus();
+$('#cd').addEventListener('keydown',e=>{if(e.key==='Enter')go();});
 }
 
 async function api(method, path, body){
@@ -137,9 +161,9 @@ async function createRoom(){
   const c=Array.from({length:5},()=>'ABCDEFGHJKMNPQRSTUVWXYZ'[Math.random()*23|0]).join('');
   frame('<h1>Creating room…</h1>');
   try{
-    S={lvl:0,ph:'play',paused:false,hint:false,started:false};
+    S={lvl:0,ph:'play',paused:false,hint:false,started:false,ver:1};
     const data=await api('POST','/api/room',{action:'create',code:c,side:mySide,state:S});
-    code=c;me='host';players=data.players||{};lastSnapshot=JSON.stringify(S);
+    code=c;me='host';players=data.players||{};
     startPoll();
     lobby();
   }catch(e){
@@ -151,9 +175,10 @@ async function joinRoom(c){
   frame('<h1>Joining room…</h1>');
   try{
     const data=await api('POST','/api/room',{action:'join',code:c,side:mySide});
-    code=c;me='guest';S=data.state;players=data.players||{};lastSnapshot=JSON.stringify(S);
+    code=c;me='guest';S=data.state||{lvl:0,ph:'play',paused:false,hint:false,started:false,ver:1};
+    players=data.players||{};
     startPoll();
-    S.started?draw(true):lobby();
+    S.started?draw():lobby();
   }catch(e){
     joinScreen('Room not found. Check the 5-letter code and try again.');
   }
@@ -163,18 +188,21 @@ function startPoll(){
   stopPoll();
   pollTimer=setInterval(async()=>{
     if(!code)return;
+    // Never interrupt iPhone keyboard while typing in an input box
+    if(document.activeElement && document.activeElement.tagName==='INPUT')return;
     try{
       const data=await api('GET',`/api/room?code=${code}`);
       players=data.players||{};
-      const snap=JSON.stringify(data.state);
       if(inLobby)updateLobbyStatus();
-      if(snap!==lastSnapshot){
-        lastSnapshot=snap;
-        S=data.state;
-        if(S.started){inLobby=false;draw(true);}
+      const remote=data.state;
+      if(remote && (remote.ver||0) > (S.ver||0)){
+        S=remote;
+        if(S.started){inLobby=false;draw();}
       }
-    }catch(e){}
-  },1200);
+    }catch(e){
+      try{await api('POST','/api/room',{action:'create',code,side:mySide,state:S});}catch(err){}
+    }
+  },1600);
 }
 
 function stopPoll(){if(pollTimer){clearInterval(pollTimer);pollTimer=null;}}
@@ -191,47 +219,50 @@ function updateLobbyStatus(){
 function lobby(){
   inLobby=true;
   frame(`<h1>Game Lobby</h1><p class="sub">${me==='host'?'Tap the code to copy and send to your partner':'You’re in room '+code}</p><div class="stack"><div class="code" id="cp" title="Tap to copy">${code}</div><p class="sub" id="pc"></p>
-  <div class="paper"><b class="t">Playing as: ${mySide==='indian'?'🇮🇳 Indian Partner':'🇵🇭 Filipino Partner'}</b><p class="riddle">On ${mySide==='indian'?'Filipino':'Indian'} rounds, you’ll type the answer. On ${mySide==='indian'?'Indian':'Filipino'} rounds, you’ll describe the secret word!</p></div>
+  <div class="paper"><b class="t">Playing as: ${mySide==='indian'?'🇮🇳 Indian Partner':'🇵🇭 Filipino Partner'}</b><p class="riddle">Work together on your call! On ${mySide==='indian'?'Indian':'Filipino'} rounds you’ll see the secret word to help your partner, and either of you can type the answer.</p></div>
   ${me==='host'?'<button class="btn" id="go">Begin the Escape</button>':''}<button class="btn pk" id="hw">How to Play</button><button class="btn gh" id="ex">Exit</button><div class="toast" id="ts"></div></div>`);
-  $('#cp').onclick=()=>{navigator.clipboard?.writeText(code);toast('Code copied!')};
+  $('#cp').onclick=()=>copyText(code,'Code copied!');
   $('#ex').onclick=exit;$('#hw').onclick=howto;
   updateLobbyStatus();
   if(me==='host')$('#go').onclick=()=>set({started:true});
 }
 
 async function set(p){
-  Object.assign(S,p);
-  lastSnapshot=JSON.stringify(S);
+  Object.assign(S,p,{ver:(S.ver||0)+1});
   inLobby=false;
-  draw(true);
+  draw();
   try{await api('POST','/api/room',{action:'update',code,state:S});}catch(e){}
 }
 
-function inp(w){
-  return `<div class="blanks">${(S.hint?w[0]:'_')+' _'.repeat(w.length-1)}</div>
-  <input id="gi" type="text" placeholder="Type answer here" autocomplete="off" autocapitalize="characters">
-  <button class="btn" id="ck">Unlock</button>
-  <button class="btn gh" id="hn">Hint: first letter</button>`;
-}
-
-function draw(force){
+function draw(){
   if(S.ph==='win')return win();
   const prevInput=$('#gi')?$('#gi').value:'';
-  const hadFocus=document.activeElement&&document.activeElement.id==='gi';
 
   const L=LV[S.lvl];
   const isGuide=(L.guide===mySide);
   const last=S.lvl===LV.length-1;
   const hr=LV.map((_,i)=>i<S.lvl||(i===S.lvl&&S.ph==='solved')?'♥':'<u>♥</u>').join('');
+
   let b;
   if(S.ph==='solved'){
-    b=`<div class="paper"><span class="tag">Unlocked</span><div class="word">${L.w[0]}</div><p class="riddle">${L.f}</p><button class="btn pk" id="nx">${last?'Open the final door':'Next room'}</button></div>`;
-  }else if(L.guide==='both'){
-    b=`<div class="paper"><span class="tag">${L.c}</span><p class="riddle">${mySide==='filipino'?L.fr:L.ir}</p><p class="note">Your partner has the other half of the clue. Talk to each other, then type the word.</p>${inp(L.w[0])}</div>`;
-  }else if(!isGuide){
-    b=`<div class="paper"><span class="tag">${L.c} — Your Turn to Guess</span><p class="riddle">${L.r}</p><p class="note">Your partner sees the secret word and will describe it to you.</p>${inp(L.w[0])}</div>`;
+    b=`<div class="paper"><span class="tag">Unlocked</span><div class="word" id="sw">${L.w[0]}</div><p class="riddle">${L.f}</p><button class="btn pk" id="nx">${last?'Open the final door':'Next room'}</button></div>`;
   }else{
-    b=`<div class="paper"><span class="tag">${L.c} — You Are the Guide</span><p class="riddle">Describe this word to your partner without saying it!</p><div class="word">${L.w[0]}</div><p class="note">Waiting for your partner to type the answer…</p></div>`;
+    const clueText = L.guide==='both'
+      ? (mySide==='filipino' ? L.fr : L.ir)
+      : L.r;
+    const guideBanner = isGuide
+      ? `<div class="secret-box"><div class="note">🤫 Your cultural insider word (describe without saying it!):</div><div class="word" id="sw" style="margin:2px 0">${L.w[0]}</div><button type="button" class="copy-chip" id="cpw">Tap to copy word</button></div>`
+      : `<p class="note">${L.guide==='both'?'Your partner has the other half of the clue!':'Your partner knows this cultural word and can give you hints!'}</p>`;
+
+    b=`<div class="paper">
+      <span class="tag">${L.c}</span>
+      <p class="riddle">${clueText}</p>
+      ${guideBanner}
+      <div class="blanks">${(S.hint?L.w[0][0]:'_')+' _'.repeat(L.w[0].length-1)}</div>
+      <input id="gi" class="txt" type="text" inputmode="text" placeholder="Tap here to type" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+      <button class="btn" id="ck">Unlock</button>
+      <button class="btn gh" id="hn">Hint: first letter</button>
+    </div>`;
   }
 
   frame(`<div class="hud"><h2>Level ${S.lvl+1} of ${LV.length}</h2><span class="hearts">${hr}</span><span><button class="btn sm gh" id="hp">?</button><button class="btn sm" id="pz">Pause</button><button class="btn sm pk" id="ex">Exit</button></span></div>
@@ -241,16 +272,18 @@ function draw(force){
 
   $('#pz').onclick=()=>set({paused:true});
   $('#ex').onclick=exit;
-  $('#hp').onclick=()=>{help=true;draw(true)};
-  if($('#hc'))$('#hc').onclick=()=>{help=false;draw(true)};
+  $('#hp').onclick=()=>{help=true;draw()};
+  if($('#hc'))$('#hc').onclick=()=>{help=false;draw()};
   if(S.paused){$('#rs').onclick=()=>set({paused:false});$('#ex2').onclick=exit}
   if($('#nx'))$('#nx').onclick=()=>last?set({ph:'win'}):set({lvl:S.lvl+1,ph:'play',hint:false});
   if($('#ck'))$('#ck').onclick=check;
   if($('#hn'))$('#hn').onclick=()=>set({hint:true});
+  if($('#sw'))$('#sw').onclick=()=>copyText(L.w[0],'Word copied!');
+  if($('#cpw'))$('#cpw').onclick=()=>copyText(L.w[0],'Word copied!');
   if($('#gi')){
-    $('#gi').value=prevInput;
-    $('#gi').onkeydown=e=>e.key==='Enter'&&check();
-    if(hadFocus)$('#gi').focus();
+    const input=$('#gi');
+    input.value=prevInput;
+    input.addEventListener('keydown',e=>{if(e.key==='Enter'){input.blur();check();}});
   }
 }
 
