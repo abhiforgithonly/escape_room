@@ -24,7 +24,6 @@ h2{font-family:var(--head);font-weight:400;color:var(--gold);margin:0;font-size:
 .stack{max-width:380px;margin:0 auto;position:relative;z-index:5}
 .paper{background:var(--paper);color:var(--ink);border-radius:12px;padding:16px 18px;border:3px solid var(--line);box-shadow:0 5px 0 #0003;margin:12px 0;position:relative;z-index:5}
 .paper b.t{font-family:var(--head);font-weight:400;font-size:1.25rem;color:var(--pink2)}
-/* iOS Safari safe input styling: >= 16px prevents auto-zoom lock, explicit user-select enables typing & paste */
 input.txt{font-family:'Fredoka',system-ui,sans-serif;font-size:20px;font-weight:600;text-align:center;letter-spacing:.12em;text-transform:uppercase;width:100%;padding:13px 12px;border-radius:10px;border:3px solid var(--line);background:#fff;color:#2f2054;margin:8px 0 0;display:block;position:relative;z-index:20;pointer-events:auto;-webkit-appearance:none;appearance:none;-webkit-user-select:text !important;user-select:text !important;touch-action:manipulation}
 input.txt:focus{outline:3px solid var(--pink);background:#fffdf7}
 .code{font-family:var(--head);font-size:clamp(2.4rem,9vw,3.6rem);letter-spacing:.2em;text-align:center;color:var(--ink);background:var(--paper);border:3px dashed var(--pink2);border-radius:12px;padding:6px 0 6px .2em;margin:8px 0;cursor:pointer;-webkit-user-select:all;user-select:all;touch-action:manipulation}
@@ -36,13 +35,13 @@ input.txt:focus{outline:3px solid var(--pink);background:#fffdf7}
 .door.open{background:#24173f;box-shadow:inset 0 0 30px #ff86b388}.door.open:before{display:none}
 .chest{width:clamp(90px,22vw,150px);margin-bottom:-2px}
 .hud{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;position:relative;z-index:5}
-.hearts{font-size:1.5rem;letter-spacing:.1em;color:var(--pink)}.hearts u{text-decoration:none;color:#6d5aa3}
+.prog{font-size:.95rem;font-weight:600;color:var(--pink);background:#2f2054aa;padding:4px 10px;border-radius:999px}
 .grid{display:grid;gap:14px;position:relative;z-index:5}
 @media(min-width:760px){.grid.two{grid-template-columns:1fr 1fr;align-items:center}.grid .scene{margin:0}}
 .tag{display:inline-block;background:var(--pink);color:#fff;font-weight:600;border-radius:6px;padding:2px 10px;font-size:.85rem;margin-bottom:6px}
 .riddle{font-size:1.1rem;line-height:1.45;margin:.3em 0}
-.blanks{font-family:var(--head);font-size:2rem;letter-spacing:.3em;text-align:center;color:var(--pink2);margin:6px 0 0}
-.word{font-family:var(--head);font-size:clamp(2.2rem,8vw,3.2rem);color:var(--pink2);text-align:center;margin:8px 0;-webkit-user-select:all;user-select:all;cursor:pointer}
+.blanks{font-family:var(--head);font-size:clamp(1.35rem,4.5vw,1.9rem);letter-spacing:.2em;text-align:center;color:var(--pink2);margin:6px 0 0;word-break:break-word}
+.word{font-family:var(--head);font-size:clamp(2rem,7vw,3rem);color:var(--pink2);text-align:center;margin:8px 0;-webkit-user-select:all;user-select:all;cursor:pointer}
 .note{font-size:.95rem;color:#6a5a92;margin:.3em 0 0}
 .ov{position:fixed;inset:0;background:#1d1238ee;z-index:30;overflow:auto;padding:max(20px,env(safe-area-inset-top,0px)) 18px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff}
 .ov .in{width:100%;max-width:480px}
@@ -54,7 +53,7 @@ ol.how li:before{content:counter(s);position:absolute;left:0;top:5px;width:32px;
 .pill{flex:1;padding:10px;border-radius:10px;border:3px solid var(--line);background:#5b4491;color:#fff;font:inherit;font-weight:600;cursor:pointer;touch-action:manipulation}
 .pill.on{background:var(--gold);color:var(--ink)}
 .secret-box{background:#fff6e5;border:2px dashed var(--pink2);border-radius:10px;padding:10px;margin:8px 0;text-align:center}
-.copy-chip{display:inline-block;background:var(--gold);color:var(--ink);font-size:.82rem;font-weight:600;padding:4px 10px;border-radius:8px;margin-top:4px;cursor:pointer;touch-action:manipulation}
+.copy-chip{display:inline-block;background:var(--gold);color:var(--ink);font-size:.82rem;font-weight:600;padding:5px 12px;border-radius:8px;margin-top:4px;border:0;cursor:pointer;touch-action:manipulation}
 </style></head><body>
 <div id="app"></div>
 <template id="vn"><svg class="vine" width="120" height="150" viewBox="0 0 120 150" fill="none"><path d="M10 0V70Q10 90 22 96M40 0V40M70 0Q70 60 58 82Q54 100 66 112" stroke="#2f2054" stroke-width="6" stroke-linecap="round"/><circle cx="22" cy="100" r="7" fill="#2f2054"/><circle cx="40" cy="46" r="6" fill="#2f2054"/><circle cx="66" cy="116" r="7" fill="#2f2054"/></svg></template>
@@ -62,11 +61,66 @@ ol.how li:before{content:counter(s);position:absolute;left:0;top:5px;width:32px;
 const CHEST='<svg class="chest" viewBox="0 0 150 100"><rect x="8" y="42" width="134" height="54" rx="4" fill="#c4542f" stroke="#2f2054" stroke-width="4"/><path d="M8 42Q8 8 75 8Q142 8 142 42Z" fill="#a8401f" stroke="#2f2054" stroke-width="4"/><rect x="30" y="8" width="12" height="88" fill="#6e2a16"/><rect x="108" y="8" width="12" height="88" fill="#6e2a16"/><rect x="64" y="38" width="22" height="26" rx="4" fill="#f6b53c" stroke="#2f2054" stroke-width="3"/><circle cx="75" cy="50" r="4" fill="#2f2054"/></svg>';
 
 const LV=[
-{c:'Filipino',w:['PAROL'],guide:'filipino',r:'I’m a glowing star that never sleeps in December. Filipinos hang me in windows, and I’m made of bamboo and paper. What am I?',f:'The parol is a star-shaped Christmas lantern. The Philippines also has the longest Christmas season in the world, starting as soon as the “-ber” months begin. Yes, even September.'},
-{c:'Indian',w:['RANGOLI','KOLAM'],guide:'indian',r:'I’m colourful art made on the floor with powder or flower petals, right at the doorstep for Diwali. No, I’m not a pizza. I welcome Goddess Lakshmi. What am I?',f:'Rangoli is floor art made with coloured powder, rice flour or petals. It’s meant to welcome good luck into the home.'},
-{c:'Filipino',w:['HALOHALO'],guide:'filipino',r:'I’m a cold, messy dessert: shaved ice, sweet beans, jelly, leche flan and ube ice cream in one tall glass. My name means “mix-mix”. What am I?',f:'Halo-halo means “mix-mix”. You stir everything together before the first bite, and the purple ube on top is the star.'},
-{c:'Indian',w:['MEHENDI','MEHNDI','HENNA'],guide:'indian',r:'Brides wear me on their hands for days. I’m made from crushed leaves, smell earthy, and you have to sit still for hours while I dry. What am I?',f:'Mehendi (henna) is applied before weddings. The popular legend says the darker the colour, the more your partner loves you.'},
-{c:'Both cultures',w:['MAHAL'],guide:'both',fr:'In Filipino, “Mahal kita” means “I love you”. Which 5-letter word means “love” and also “expensive” at the market?',ir:'Taj ______ is the famous monument of love built by Shah Jahan for his queen, in Agra. Fill in the blank.',f:'“Mahal” means love, and also expensive, in Filipino. In Hindi and Urdu it means palace. Love is priceless, but it’s also a little pricey.'}
+// 1. Filipino
+{c:'Filipino',w:['KUMAIN'],guide:'filipino',r:'In the Philippines, saying “I love you” is nice—but texting “______ ka na?” (“Have you eaten yet?”) every three hours is the real proof of love. Fill in the first 6-letter word!',f:'“Kumain ka na?” is the ultimate Filipino love language—it means “I’m thinking about you, I care about you, and I want an excuse to talk to you.”'},
+// 2. Indian
+{c:'Indian',w:['ADRAK'],guide:'indian',r:'Plain tea is fine, but crushing fresh ______ with a mortar and pestle into boiling milk tea turns it into medicine for a rainy day, a headache, or a long conversation. What 5-letter ingredient am I?',f:'Adrak wali chai (ginger tea) is India’s unofficial love potion—offering to make ginger chai for someone when they’re tired or stressed says “I’ve got you.”'},
+// 3. Both cultures
+{c:'Both cultures',w:['RICE'],guide:'both',fr:'Without kanin, a Filipino meal doesn’t count as a real meal—even fast-food fried chicken comes with a scoop of me!',ir:'Whether steamed chawal with dal or fragrant biryani, I’m the anchor of the plate. What 4-letter grain rules both our tables?',f:'In both cultures, asking “Have you eaten rice yet?” is literally how you ask “Have you had a proper meal?”'},
+// 4. Filipino
+{c:'Filipino',w:['TAMPO'],guide:'filipino',r:'I’m not full-blown anger—I’m that quiet, sulky withdrawal when your feelings are hurt and you secretly want your partner to notice, chase you, and make it right. What am I?',f:'Tampo has no exact English translation—and the cure is never arguing back; it’s suyo (sweetly winning your partner back with patience, snacks, and affection).'},
+// 5. Indian
+{c:'Indian',w:['JHOOMKA','JHUMKA'],guide:'indian',r:'I’m the traditional bell-shaped earring that sways with every turn of her head—immortalized in countless Bollywood love songs. What am I?',f:'Gifting a pair of jhumkas is one of the most timeless, understated romantic gestures in Indian culture—small, thoughtful, and guaranteed to make her smile.'},
+// 6. Both cultures
+{c:'Both cultures',w:['MUKHA'],guide:'both',fr:'In Tagalog, ______ is the everyday word for “face” (as in “Ang ganda ng ______ mo” — “Your face is so pretty”).',ir:'In Hindi and Sanskrit, ______ (or Mukh) is the exact same word for “face” or “mouth”! What 5-letter word connects both our languages?',f:'Mukha in Tagalog and Mukha in Sanskrit are pronounced almost identically and mean the exact same thing!'},
+// 7. Filipino
+{c:'Filipino',w:['SUYO'],guide:'filipino',r:'When your partner has tampo, I’m the sweet art of wooing them back—bringing their favorite food, apologizing softly, and refusing to go to sleep mad. What 4-letter word am I?',f:'Pagsusuyo is the heartbeat of Filipino relationships—proving that love means caring more about fixing the mood than winning the argument.'},
+// 8. Indian
+{c:'Indian',w:['GULKAND'],guide:'indian',r:'Fresh Damask rose petals layered with sugar and slow-cooked in glass jars under the summer sun for weeks into a fragrant, sweet floral preserve. What am I?',f:'Gulkand is used inside sweet paan, milkshakes, and desserts—and because it’s literally made from sun-baked rose petals, it’s as romantic as food gets.'},
+// 9. Both cultures
+{c:'Both cultures',w:['OKRA'],guide:'both',fr:'In the Philippines, I’m boiled whole and dipped in bagoong or tucked right on top of Pinakbet and Sinigang.',ir:'In India, I’m called Bhindi—pan-fried crispy with onions and spices so I’m never slimy. What 4-letter green pod am I?',f:'Both kitchens love okra/bhindi—and both cultures have strong opinions about how to cook it without the slime!'},
+// 10. Filipino
+{c:'Filipino',w:['SAWSAWAN'],guide:'filipino',r:'A Filipino meal isn’t finished when it leaves the stove—it’s only complete when you mix your own custom dipping sauce of soy sauce, vinegar, calamansi, and chili at the table. What is this called?',f:'Every Filipino has their own sawsawan ratio—and making your partner’s dipping sauce just the way they like it is considered elite partner behavior.'},
+// 11. Indian
+{c:'Indian',w:['KHURCHAN'],guide:'indian',r:'I’m the caramelized, chewy milk scrapings peeled from the sides and bottom of a heavy iron kadhai after simmering milk for hours. What hidden sweet treat am I?',f:'Khurchan literally means “scrapings”—and in Old Delhi and Mathura, sweet-makers layer those rich milk scrapings with cardamom and sugar into a delicacy people line up for!'},
+// 12. Both cultures
+{c:'Both cultures',w:['SINTA'],guide:'both',fr:'In classic Tagalog poetry and love songs, ______ means “beloved” or “darling.”',ir:'Derived from Sanskrit cinta (deep thought, care, and devotion in one’s heart), this 5-letter word became a poetic Filipino endearment for “my love.” What is it?',f:'Over a thousand years ago, Sanskrit words for emotion, devotion, and care traveled across the sea and became some of Tagalog’s most romantic words!'},
+// 13. Filipino
+{c:'Filipino',w:['TUTONG'],guide:'filipino',r:'I’m the crispy, slightly toasted layer of rice stuck to the very bottom of the pot—some people scrape me away, while true rice lovers fight over me! What am I?',f:'Tutong is so beloved that Filipino chefs now turn crispy bottom-of-the-pot rice into gourmet toppings and snacks—just like the crispy khurchan at the bottom of an Indian milk pan!'},
+// 14. Indian
+{c:'Indian',w:['TADKA'],guide:'indian',r:'Dal isn’t ready until you heat ghee in a tiny ladle, crackle cumin seeds, garlic, and red chilies, and pour that sizzling magic right on top! What is this technique called?',f:'The tadka (tempering) doesn’t just add flavor—that dramatic hiss when hot spiced ghee hits the lentils is the official dinner bell in every Indian kitchen.'},
+// 15. Both cultures
+{c:'Both cultures',w:['BANANA'],guide:'both',fr:'We use every single part—saba for turon, blossoms (puso ng saging) for stews, and our famous red ketchup is actually made from me!',ir:'We fry raw kela into crispy chips, cook flower blossoms into stir-fries, and eat off the giant green leaves! What 6-letter fruit am I?',f:'Both India and the Philippines treat the banana plant as a zero-waste kitchen miracle—eating the fruit, the flower bud, the stem, and serving feasts on the leaves!'},
+// 16. Filipino
+{c:'Filipino',w:['TORPE'],guide:'filipino',r:'I’m the classic Filipino word for a guy who is so head-over-heels in love with his crush that he turns completely shy, tongue-tied, and awkward around her. What am I?',f:'Being torpe is considered endearing in Filipino romance—it shows your feelings are so genuine that your smooth-talking confidence completely short-circuits.'},
+// 17. Indian
+{c:'Indian',w:['SHARMANA'],guide:'indian',r:'When someone compliments you or brings up your partner’s name and you cover your face with a shy smile and blush—in Hindi, that adorable reaction is called ______.',f:'Sharmana (blushing/being coy) is celebrated in Indian poetry and songs as one of the cutest expressions of new and lasting romance.'},
+// 18. Both cultures
+{c:'Both cultures',w:['ATCHARA'],guide:'both',fr:'Grated green papaya pickled in sweet-sour vinegar with carrots and raisins, served alongside fried or grilled dishes.',ir:'In India, tangy spiced pickles are called Achar—a word that sailed to the Philippines and became Atchara! Type the 7-letter Filipino spelling!',f:'Achar (India) → Atchara (Philippines)! Even the name of our favorite mealtime pickle is shared between both countries!'},
+// 19. Filipino
+{c:'Filipino',w:['KWEKKWEK'],guide:'filipino',r:'Boiled quail eggs dipped in bright neon-orange batter, deep-fried on a street cart, and dunked in sweet-spicy vinegar. What iconic orange street snack am I?',f:'Eating kwek-kwek standing next to a street cart after school or work is a classic budget Filipino date—just make sure you don’t drip orange sauce on your shirt!'},
+// 20. Indian
+{c:'Indian',w:['CHATORA','CHATORI'],guide:'indian',r:'I’m the playful Hindi word for a hopeless foodie—someone who can never walk past a street-food stall without stopping for “just one bite.” What am I?',f:'Calling your partner a chatora (or chatori) is an affectionate tease—especially when they claim they’re full and then eat half your plate!'},
+// 21. Both cultures
+{c:'Both cultures',w:['PUTO'],guide:'both',fr:'Steamed fluffy rice cakes often topped with cheese or paired with dinuguan—a staple at every Filipino fiesta.',ir:'In Kerala and Tamil Nadu, steamed cylinders of ground rice and grated coconut are called Puttu! Type the 4-letter Filipino spelling!',f:'South Indian Puttu and Filipino Puto share both the ancient word for steamed rice cake and the exact same bamboo/steamer cooking roots!'},
+// 22. Filipino
+{c:'Filipino',w:['PASENSYA'],guide:'filipino',r:'Whether you’re stuck in Manila traffic or apologizing after a tiny lover’s quarrel, Filipinos say “______ na” to ask for patience, forgiveness, and grace. What 8-letter word am I?',f:'Pasensya comes from Spanish paciencia, and saying “pasensya na, baby” with a soft voice immediately melts away tension.'},
+// 23. Indian
+{c:'Indian',w:['BARISH'],guide:'indian',r:'In Indian romance, nothing beats monsoon ______, hot onion pakoras, and sharing an umbrella while Bollywood songs play in the background. What 6-letter Hindi word am I?',f:'Both India and the Philippines have dramatic tropical monsoons—where heavy rain instantly turns into an excuse for hot comfort food and cozy indoor dates!'},
+// 24. Both cultures
+{c:'Both cultures',w:['BITTERMELON','AMPALAYA','KARELA'],guide:'both',fr:'Called Ampalaya, I’m sautéed with beaten eggs (ginisang ampalaya)—bitter on the tongue, healthy for the heart.',ir:'Called Karela, I’m stuffed with spices or fried into crispy chips—bitter at first bite, loved by elders. What 11-letter bumpy green veggie am I?',f:'Both India and the Philippines are among the few cuisines in the world that actively celebrate bitterness as a delicious, healthy flavor!'},
+// 25. Filipino
+{c:'Filipino',w:['MERIENDA'],guide:'filipino',r:'Breakfast, lunch, and dinner aren’t enough—I’m the sacred afternoon snack break around 3 or 4 PM for pancit, banana cue, or pandesal with coffee. What am I?',f:'Skipping merienda in the Philippines feels practically illegal—it’s the universal excuse to take a break and share food with the people you love.'},
+// 26. Indian
+{c:'Indian',w:['MEETHI'],guide:'indian',r:'In Hindi, I mean “sweet”—used for desserts, sweet memories, and ______ baatein (sweet late-night pillow talk that makes you lose track of time). What 6-letter word am I?',f:'Whether it’s meethi chai or meethi yaadein (sweet memories), sweetness in Hindi describes both flavor and tenderness.'},
+// 27. Both cultures
+{c:'Both cultures',w:['TURMERIC'],guide:'both',fr:'Called Luyang Dilaw (“yellow ginger”), it gives Chicken Inasal oil and Kuning rice its sunny golden glow.',ir:'Called Haldi, I’m the golden spice in every curry—and rubbed onto brides and grooms before Indian weddings for a glowing complexion! What 8-letter root am I?',f:'Both cultures use golden turmeric not just for color and flavor, but as traditional kitchen medicine for colds, sore throats, and glowing skin!'},
+// 28. Filipino
+{c:'Filipino',w:['UBE'],guide:'filipino',r:'I’m the vibrant royal-purple yam turned into jam (halaya), ice cream, cakes, and lattes—sweet, nutty, and unmistakable in any Filipino dessert. What 3-letter root am I?',f:'Before ube became a global trend, Filipino grandmothers spent hours stirring ube halaya over a low flame—an arm workout done purely out of love for family holidays.'},
+// 29. Indian
+{c:'Indian',w:['PARCHI'],guide:'indian',r:'Before smartphones, Indian lovers folded tiny handwritten love notes into secret paper squares and slipped them into books or pockets. What is that little note called?',f:'Passing a parchi (a folded paper chit) was peak 90s Indian school and college romance—thrilling because getting caught meant instant trouble!'},
+// 30. Both cultures — Final Door
+{c:'Both cultures',w:['TAHANAN'],guide:'both',fr:'Beyond just a physical house (bahay), ______ means “home”—coming from tahan, meaning to calm down, rest, and feel safe.',ir:'In India, Ghar isn’t just bricks—it’s wherever your apne (your loved ones) are. Type the 7-letter Tagalog word that means “home is where you find peace”!',f:'In Tagalog, tahanan literally translates to “the place where crying stops and peace begins”—the sweetest way to describe being with the person you love.'}
 ];
 
 const $=s=>document.querySelector(s),app=$('#app');
@@ -74,7 +128,6 @@ let code='',me='host',mySide=localStorage.getItem('wyeit_side')||'indian';
 let S={lvl:0,ph:'play',paused:false,hint:false,started:false,ver:0};
 let players={},pollTimer=null,help=false,inLobby=false;
 
-// iOS Safari reliable copy helper
 function copyText(txt, msg='Copied!'){
   if(navigator.clipboard && window.isSecureContext){
     navigator.clipboard.writeText(txt).then(()=>toast(msg)).catch(()=>fallbackCopy(txt,msg));
@@ -98,7 +151,7 @@ function fallbackCopy(txt, msg){
 const norm=s=>s.toUpperCase().replace(/[^A-Z]/g,'');
 function frame(inner){const v=$('#vn').innerHTML;app.innerHTML=`<div class="frame">${v.replace('class="vine"','class="vine vl"')}${v.replace('class="vine"','class="vine vr"')}${inner}</div>`}
 function scene(o){return `<div class="scene"><div class="door ${o?'open':''}"><i>01</i><s></s></div>${CHEST}<div class="door"><i>02</i><s></s></div></div>`}
-const HOW=`<ol class="how"><li><b>Pick your side & connect.</b> Choose whether you’re the Indian or Filipino partner. One taps Start Game and shares the 5-letter code; the other taps Join Room.</li><li><b>Take turns helping each other.</b> On Filipino levels, the Filipino partner gets the secret word to help describe it. On Indian levels, the Indian partner gets it!</li><li><b>Type or copy the answer.</b> Tap the text box to type your guess (or tap any secret word to copy it) and hit Unlock!</li><li><b>Finish all five doors together.</b> Both of you see the game progress together.</li></ol>`;
+const HOW=`<ol class="how"><li><b>Pick your side & connect.</b> Choose whether you’re the Indian or Filipino partner. One taps Start Game and shares the 5-letter code; the other taps Join Room.</li><li><b>Take turns helping each other.</b> On Filipino levels, the Filipino partner gets the secret word clue to help describe it. On Indian levels, the Indian partner gets it. On Both Cultures levels, each of you gets half the clue!</li><li><b>Type or copy the answer.</b> Tap the text box to type your guess (or tap any secret word to copy it) and hit Unlock!</li><li><b>Finish all 30 doors together.</b> Both of you see the game progress live.</li></ol>`;
 
 function howto(){frame(`<h1>How to Play</h1><div class="paper">${HOW}</div><div class="stack"><button class="btn" id="bk">Back</button></div>`);$('#bk').onclick=()=>code?(S.started?draw():lobby()):home()}
 
@@ -110,7 +163,7 @@ function setSide(side){
 
 function home(msg=''){
 stopPoll();code='';inLobby=false;
-frame(`<h1>Will You Escape<br>in Time?</h1><p class="sub">An Indian and Filipino escape room for two. Solve the clues together before the lights go out.</p>${scene()}
+frame(`<h1>Will You Escape<br>in Time?</h1><p class="sub">30 doors of Indian & Filipino food, romance, and shared culture. Solve the clues together before the lights go out.</p>${scene()}
 <div class="stack">
 <div class="pill-row">
   <button class="pill ${mySide=='indian'?'on':''}" id="s-in">🇮🇳 I’m Indian</button>
@@ -188,7 +241,6 @@ function startPoll(){
   stopPoll();
   pollTimer=setInterval(async()=>{
     if(!code)return;
-    // Never interrupt iPhone keyboard while typing in an input box
     if(document.activeElement && document.activeElement.tagName==='INPUT')return;
     try{
       const data=await api('GET',`/api/room?code=${code}`);
@@ -241,7 +293,7 @@ function draw(){
   const L=LV[S.lvl];
   const isGuide=(L.guide===mySide);
   const last=S.lvl===LV.length-1;
-  const hr=LV.map((_,i)=>i<S.lvl||(i===S.lvl&&S.ph==='solved')?'♥':'<u>♥</u>').join('');
+  const solvedCount=S.lvl+(S.ph==='solved'?1:0);
 
   let b;
   if(S.ph==='solved'){
@@ -265,7 +317,7 @@ function draw(){
     </div>`;
   }
 
-  frame(`<div class="hud"><h2>Level ${S.lvl+1} of ${LV.length}</h2><span class="hearts">${hr}</span><span><button class="btn sm gh" id="hp">?</button><button class="btn sm" id="pz">Pause</button><button class="btn sm pk" id="ex">Exit</button></span></div>
+  frame(`<div class="hud"><h2>Door ${S.lvl+1} / ${LV.length}</h2><span class="prog">♥ ${solvedCount} / ${LV.length}</span><span><button class="btn sm gh" id="hp">?</button><button class="btn sm" id="pz">Pause</button><button class="btn sm pk" id="ex">Exit</button></span></div>
   <div class="grid two">${scene(S.ph==='solved')}<div>${b}<div class="toast" id="ts"></div></div></div>
   ${S.paused?`<div class="ov"><div class="in"><h1>Paused</h1><p class="sub">Take a breather. The game is paused for both of you.</p><button class="btn" id="rs">Resume</button><button class="btn gh" id="ex2">Exit game</button></div></div>`:''}
   ${help?`<div class="ov"><div class="in"><h1>How to Play</h1><div class="paper">${HOW}</div><button class="btn" id="hc">Got it</button></div></div>`:''}`);
@@ -296,7 +348,7 @@ function check(){
 
 function toast(t){const e=$('#ts');if(e)e.textContent=t}
 function win(){
-  frame(`<h1>You Escaped!</h1><p class="sub">Every lock opened, and you did it together.</p>${scene(true)}<div class="stack"><div class="paper"><b class="t">Mahal kita. Pyaar hai.</b><p class="riddle">Your prize: a big bowl of halo-halo, a cup of chai, and a very long hug. Salamat and dhanyavaad for playing.</p></div><button class="btn" id="ag">Play again</button><button class="btn gh" id="ex">Exit</button></div>`);
+  frame(`<h1>You Escaped!</h1><p class="sub">All 30 doors opened—from adrak chai to tahanan.</p>${scene(true)}<div class="stack"><div class="paper"><b class="t">Mahal kita. Pyaar hai.</b><p class="riddle">Your prize: a big bowl of halo-halo, a cup of adrak chai, and a very long hug. Salamat and dhanyavaad for playing.</p></div><button class="btn" id="ag">Play again</button><button class="btn gh" id="ex">Exit</button></div>`);
   $('#ag').onclick=()=>set({lvl:0,ph:'play',hint:false,paused:false});
   $('#ex').onclick=exit;
 }
