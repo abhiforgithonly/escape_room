@@ -1,4 +1,3 @@
-// api/room.js — Simple HTTPS room sync (replaces PeerJS completely)
 const rooms = globalThis.__WYEIT_ROOMS || (globalThis.__WYEIT_ROOMS = new Map());
 
 export default async function handler(req, res) {
@@ -7,7 +6,6 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  // Clean up rooms older than 2 hours
   const now = Date.now();
   for (const [k, v] of rooms) {
     if (now - v.updated > 7200000) rooms.delete(k);
@@ -29,7 +27,7 @@ export default async function handler(req, res) {
       const room = {
         code,
         players: { [side || 'indian']: true },
-        state: state || { lvl: 0, ph: 'play', paused: false, hint: false, started: false },
+        state: state || { lvl: 0, ph: 'play', paused: false, hint: false, started: false, ver: 1 },
         updated: now
       };
       rooms.set(code, room);
